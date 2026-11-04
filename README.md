@@ -1,170 +1,84 @@
-# 마이크로컨트롤러응용 (2026) — VS Code 개발환경
+# MicroController Study
 
-Arduino IDE 대신 **VS Code + PlatformIO** 로 실습합니다.
-Windows 와 macOS 가 **완전히 동일한 컴파일러·코어 버전**을 쓰도록 구성되어 있습니다.
+Arduino Uno와 PlatformIO를 사용해 마이크로컨트롤러를 공부하며 작성한 코드를 정리한 저장소입니다.
+
+> 이 저장소의 기본 개발 환경과 템플릿은 수업에서 제공된 자료를 바탕으로 합니다.
+> 제가 직접 실습하고 공부한 코드는 **[`Archive`](Archive/)** 폴더에 정리되어 있습니다.
+
+## 학습 환경
 
 | 항목 | 내용 |
 |---|---|
-| 대상 보드 | Arduino Uno R3 (ATmega328P, 16 MHz) |
-| 편집기 | Visual Studio Code |
-| 빌드 시스템 | PlatformIO Core (VS Code 확장에 내장) |
-| 툴체인 | avr-gcc 5.4.0 계열 (`platformio.ini` 에 버전 고정) |
-| 지원 OS | Windows 10/11, macOS 12 이상 (Intel / Apple Silicon 모두) |
+| 보드 | Arduino Uno R3 (ATmega328P) |
+| 언어 | C/C++ |
+| 개발 환경 | Visual Studio Code + PlatformIO |
+| 주요 주제 | GPIO, 스위치, 인터럽트, UART, ADC |
 
----
+## 학습 내용
 
-## 1. 빠른 시작 (약 15분)
+### [Week 01 - LED 제어](Archive/week01/)
 
-### 준비물
-- 인터넷 연결 (최초 1회 약 400 MB 다운로드)
-- **여유 디스크 공간 2 GB 이상**
-- Arduino Uno 보드 + **데이터 전송용** USB-B 케이블
-  - 충전 전용 케이블은 인식되지 않습니다. 이게 실습 중 1번 문제입니다.
+- LED 전체 점등 및 점멸
+- 반복 동작을 함수로 구현
+- 교차 패턴과 시프트 패턴 구현
+- LED 제어 과제
 
-### 1단계 — 저장소 내려받기
+### [Week 02 - 스위치 입력](Archive/week02/)
+
+- 스위치 입력 기초
+- 스위치로 LED 이동 방향 제어
+- 마지막 LED와 첫 번째 LED 연결 처리
+- 다중 스위치 제어 과제
+
+### [Week 03 - 인터럽트](Archive/week03/)
+
+- 외부 인터럽트
+- Pin Change Interrupt(PCINT)
+- 인터럽트를 이용한 스위치 및 LED 제어
+
+### [Week 04 - UART 통신](Archive/week04/)
+
+- 레지스터를 이용한 문자 및 문자열 송신
+- `printf`를 이용한 시리얼 출력
+- UART와 PCINT 연동
+- STX/ETX 기반 패킷 프로토콜
+
+### [Week 05 - ADC](Archive/week05/)
+
+- 가변저항 값 읽기
+- 가변저항을 이용한 LED 제어
+- 조도 센서 값 읽기
+- ADC 센서 기반 LED 제어
+
+### 기타 실습
+
+- [`Archive/middle`](Archive/middle/): UART 프로토콜 및 통신 테스트
+- [`Archive/test`](Archive/test/): 이진 ALU 등 추가 실험 코드
+
+## 폴더 구조
+
+```text
+MicroController/
+├── Archive/          # 개인 학습 및 실습 코드
+│   ├── week01/      # LED
+│   ├── week02/      # 스위치
+│   ├── week03/      # 인터럽트
+│   ├── week04/      # UART
+│   ├── week05/      # ADC
+│   ├── middle/      # 통신 테스트
+│   └── test/        # 추가 실험
+├── src/main.cpp      # PlatformIO 빌드 대상 코드
+├── platformio.ini    # PlatformIO 프로젝트 설정
+└── README.md
+```
+
+## 코드 실행 방법
+
+`Archive`의 파일은 학습 기록이므로 자동으로 빌드되지 않습니다. 실행할 코드를 `src/main.cpp`에 복사한 다음 PlatformIO에서 Build 또는 Upload를 실행합니다.
 
 ```bash
-git clone https://github.com/PGH0621/mc2026.git
-cd mc2026
+pio run
+pio run --target upload
 ```
 
-> **Windows 주의**: 바탕화면·문서 폴더는 OneDrive 동기화 대상인 경우가 많습니다.
-> 동기화 중 파일이 잠겨 빌드가 실패할 수 있으니 `C:\dev\mc2026` 같은 곳을 권장합니다.
-> 경로에 한글이나 공백이 있어도 빌드에는 문제가 없습니다.
-
-### 2단계 — 설치 스크립트 실행
-
-OS에 맞는 것 **하나만** 실행합니다.
-
-**Windows** (PowerShell)
-```bash
-powershell -ExecutionPolicy Bypass -File .\scripts\setup-windows.ps1
-```
-
-**macOS** (터미널)
-```bash
-bash scripts/setup-macos.sh
-```
-
-스크립트는 VS Code / Git / PlatformIO 확장을 설치하며, **아무것도 지우지 않습니다.**
-이미 설치된 항목은 건너뜁니다.
-
-### 3단계 — VS Code 로 폴더 열고 점검
-
-1. VS Code 를 완전히 종료했다가, **이 폴더(`mc2026`)를 폴더째로** 엽니다.
-   - 파일 하나만 여는 게 아니라 `File > Open Folder` 로 폴더를 열어야 합니다.
-2. 우측 하단에 "PlatformIO Core 설치 중" 알림이 뜹니다. **끝날 때까지 기다립니다** (최초 5~10분).
-3. 설치가 끝나면 점검 스크립트를 실행합니다.
-
-**Windows**
-```bash
-powershell -ExecutionPolicy Bypass -File .\scripts\doctor.ps1
-```
-
-**macOS**
-```bash
-bash scripts/doctor.sh
-```
-
-마지막 줄에 `점검 통과` 가 나오면 준비 완료입니다.
-
-상세 절차와 스크린샷 수준의 안내는 OS별 문서를 보세요.
-- Windows → [docs/SETUP-Windows.md](docs/SETUP-Windows.md)
-- macOS → [docs/SETUP-macOS.md](docs/SETUP-macOS.md)
-
----
-
-## 2. 빌드 / 업로드 / 시리얼 모니터
-
-**두 OS의 조작 방법은 완전히 같습니다.** VS Code 맨 아래 파란 상태 표시줄을 쓰세요.
-
-| 아이콘 | 이름 | 하는 일 |
-|---|---|---|
-| ✓ (체크) | Build | 컴파일만 함. 보드 없어도 됨 |
-| → (오른쪽 화살표) | Upload | 컴파일 + 보드에 쓰기 |
-| 🗑 (휴지통) | Clean | 빌드 캐시 삭제. 이상할 때 |
-| 🔌 (플러그) | Serial Monitor | 시리얼 출력 보기 (종료: `Ctrl + C`) |
-
-아이콘 위에 마우스를 올리면 이름이 뜹니다.
-헷갈리면 **명령 팔레트**가 가장 확실합니다.
-
-- Windows: `Ctrl + Shift + P` → `PlatformIO: Upload`
-- macOS: `Cmd + Shift + P` → `PlatformIO: Upload`
-
-> 단축키(`Ctrl+Alt+B` 등)도 있지만 OS·버전에 따라 다를 수 있으니,
-> 수업에서는 **상태 표시줄 아이콘**을 기준으로 설명합니다.
-
-### 첫 동작 확인
-
-`src/main.cpp` 는 **빈 뼈대**입니다. 그대로 업로드하면 빌드와 업로드는 성공하지만
-보드에서는 아무 일도 일어나지 않습니다. **정상입니다.**
-
-동작까지 확인하려면 `examples/00_env_check.cpp` 의 내용을 `src/main.cpp` 에
-덮어쓰고 업로드하세요. 다음 세 가지가 모두 되어야 합니다.
-
-1. `L` LED 가 1초 주기로 점멸 → 업로드 성공
-2. 시리얼 모니터에 `[tick N] uptime = N s` 출력 → 수신 정상
-3. 모니터에 글자 입력 + Enter → 그대로 되돌아옴 → 송신 정상
-
-확인이 끝나면 `src/main.cpp` 를 다시 비우고 실습 코드를 작성합니다.
-
----
-
-## 3. 폴더 구조
-
-```
-mc2026/
-├── platformio.ini      ← 툴체인 버전이 고정된 핵심 파일. 함부로 고치지 말 것
-├── src/                ← 실습 코드를 작성하는 곳. 여기만 컴파일됨
-│   └── main.cpp        ← setup()/loop() 은 src 전체에 딱 한 벌만
-├── examples/           ← 참고용 예제. 컴파일되지 않음
-├── include/            ← 공용 헤더(.h)
-├── lib/                ← 직접 만든 라이브러리
-├── .vscode/            ← 편집기 설정 (팀 공용, 커밋됨)
-├── scripts/            ← 설치·점검 스크립트
-├── docs/               ← 설치 안내 / 문제 해결
-└── .pio/               ← 빌드 산출물. 자동 생성되며 git 에 올라가지 않음
-```
-
----
-
-## 4. 라이브러리 추가하는 법
-
-라이브러리를 **폴더에 복사하지 마세요.** `platformio.ini` 의 `lib_deps` 에
-**버전까지** 적으면 두 OS가 같은 버전을 자동으로 내려받습니다.
-
-```ini
-[env:uno]
-board = uno
-lib_deps =
-	adafruit/Adafruit SSD1306@2.5.13
-	paulstoffregen/OneWire@2.3.8
-```
-
-라이브러리 이름은 <https://registry.platformio.org/> 에서 검색합니다.
-버전 번호(`@2.5.13`)를 빼면 학생마다 다른 버전이 깔려 "제 PC에선 되는데요" 상황이 생깁니다.
-
----
-
-## 5. 왜 Arduino IDE 가 아니라 PlatformIO 인가
-
-| | Arduino IDE | PlatformIO |
-|---|---|---|
-| 버전 고정 | 각자 설치한 버전 사용 | `platformio.ini` 로 프로젝트 단위 고정 |
-| 라이브러리 | 전역 설치, 충돌 잦음 | 프로젝트별 격리 |
-| 자동완성 | 약함 | VS Code C/C++ 수준 |
-| Git 연동 | 별도 | 편집기에 내장 |
-| OS 차이 | 설정이 각자 다름 | 설정 파일이 저장소에 포함 |
-
-핵심은 **`platformio.ini` 한 파일이 저장소에 들어 있다는 것**입니다.
-누가 어떤 OS에서 clone 하든 같은 컴파일러, 같은 코어, 같은 라이브러리 버전을 씁니다.
-
----
-
-## 6. 문제가 생기면
-
-1. 먼저 [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) 에서 **증상**으로 찾아보세요.
-2. 그래도 안 되면 조교에게 문의할 때 아래를 **그대로 복사**해서 보내주세요.
-   - 사용 OS와 버전
-   - `doctor` 스크립트 실행 결과 전체
-   - VS Code 하단 터미널의 빨간 오류 메시지 전체 (일부 말고 전체)
+각 예제는 회로 구성과 핀 번호가 다를 수 있으므로 코드 상단의 핀 설정을 먼저 확인해야 합니다.
