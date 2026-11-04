@@ -17,4 +17,8 @@ desktop.ini
 
 # ---- 기타 ----
 *.swp
+*.swo
+*~
 *.bak
+*.tmp
+*.log

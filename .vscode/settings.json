@@ -11,11 +11,11 @@
   "editor.rulers": [100],
   "[cpp]": {
     "editor.defaultFormatter": "ms-vscode.cpptools",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false
   },
   "[c]": {
     "editor.defaultFormatter": "ms-vscode.cpptools",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false
   },
 
   // ---- .ino 파일도 C++ 로 인식시키기 ----
