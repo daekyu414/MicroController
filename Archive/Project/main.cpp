@@ -28,9 +28,9 @@
 // 네오픽셀 개수
 // =====================
 #define PIXEL_ALWAYS_COUNT 15
-#define PIXEL1_COUNT 4
-#define PIXEL2_COUNT 4
-#define PIXEL3_COUNT 4
+#define PIXEL1_COUNT 1
+#define PIXEL2_COUNT 1
+#define PIXEL3_COUNT 1
 #define PIXEL_CENTER2_COUNT 15
 
 // 기준 온도
@@ -162,17 +162,11 @@ void loop() {
   // =====================
   // 온도 출력
   // =====================
-  Serial.print("센서1: ");
-  Serial.print(temp1, 2);
-  Serial.print(" C   ");
-
-  Serial.print("센서2: ");
-  Serial.print(temp2, 2);
-  Serial.print(" C   ");
-
-  Serial.print("센서3: ");
-  Serial.print(temp3, 2);
-  Serial.println(" C");
+    Serial.print(temp1, 2);
+    Serial.print(",");
+    Serial.print(temp2, 2);
+    Serial.print(",");
+    Serial.println(temp3, 2);
 
 
   // ==================================================
