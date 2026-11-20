@@ -75,12 +75,14 @@ Arduino Uno와 PlatformIO를 사용해 마이크로컨트롤러를 공부하며 
 | `2_ 온습도센서_LED.cpp` | 습도에 따른 LED 막대 표시 | DHT22: A5 |
 | `3_초음파센서.cpp` | Echo 시간과 거리(cm) 출력 | Trig: A4, Echo: D12 |
 | `4_초음파센서_LED.cpp` | 거리에 따른 LED 막대 표시 | Trig: A4, Echo: D12 |
+| [`99_초음파센서_Assignment.cpp`](Archive/week12/99_초음파센서_Assignment.cpp) | 거리에 따른 부저 경고음 제어 | Trig: A4, Echo: D12, 부저: A2 |
+
+초음파 센서 과제는 물체가 10cm 미만일 때 1kHz 경고음을 연속으로 울리고, 10~30cm에서는 거리가 멀수록 경고음 사이의 간격을 늘립니다. 30cm를 초과하거나 Echo 응답이 없으면 부저를 끕니다.
 
 ### 기타 실습
 
 - [`Archive/middle`](Archive/middle/): UART 프로토콜 및 통신 테스트
 - [`Archive/test`](Archive/test/): 이진 ALU 등 추가 실험 코드
-- [`Archive/Project`](Archive/Project/): DS18B20 온도센서 3개와 NeoPixel, 부저를 연동한 프로젝트
 
 ## 폴더 구조
 
@@ -95,7 +97,6 @@ MicroController/
 │   ├── week10/      # 타이머와 부저
 │   ├── week11/      # NeoPixel
 │   ├── week12/      # 온습도·초음파 센서
-│   ├── Project/     # 온도센서·NeoPixel·부저 연동
 │   ├── middle/      # 통신 테스트
 │   └── test/        # 추가 실험
 ├── src/              # 실행할 예제를 main.cpp로 복사하는 폴더
